@@ -35,13 +35,13 @@ case class King(color: Color) extends Piece {
         to <- from.delta(fileOffset, rankOffset)
         if state.positions.get(to).map(_.color != color).getOrElse(true)
       } yield new Move(state, from, to)
-    } ++ castlingMove(from, state)
+    } ++ castling(from, state)
   }
 
   def inCheck(at: Square,  state: GameState) =
     state.positions.exists(position => position._2.threatens(position._1, state, at))
 
-  private def castlingMove(from: Square, state: GameState): Seq[Move] = {
+  def castling(from: Square, state: GameState): Seq[Move] = {
     if (homeRank == from.rank
       && homeFiles.contains(from.file)
       && !state.journal.exists(_.piece == this)
