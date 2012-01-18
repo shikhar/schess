@@ -40,6 +40,14 @@ trait PawnPromotion extends BasicMove {
   override abstract def apply(): GameState = apply(Queen(piece.color))
 
   def apply(desired: Piece): GameState = {
+    desired match {
+      case Queen(c) if c == piece.color =>
+      case Knight(c) if c == piece.color =>
+      case Rook(c) if c == piece.color =>
+      case Bishop(c) if c == piece.color =>
+      case x => sys.error("Can't be promoted to " + x)
+    }
+
     val basic = super.apply
     basic.copy(
       positions = basic.positions + (to -> desired),

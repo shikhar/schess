@@ -160,6 +160,8 @@ case class Pawn(color: Color) extends Piece {
     case Black => -1
   }
 
+  private lazy val opponent = Pawn(Color.opposite(color))
+
   override def moves(from: Square, state: GameState): Set[Move] = {
     assert(state.positions.get(from) == Some(this))
 
@@ -179,11 +181,15 @@ case class Pawn(color: Color) extends Piece {
       if state.positions.get(to).exists(_.color != color)
     } yield to
 
-    (Set() ++ oneStep ++ twoSteps ++ capturingSteps).map(Move(state, from, _)) ++ enPassant(from, state)
+    (Set() ++ oneStep ++ twoSteps ++ capturingSteps).map( to =>
+      if (to.rank == opponent.homeRank)
+        new Move(state, from, to) with PawnPromotion
+      else
+        Move(state, from, to)
+    ) ++ enPassant(from, state)
   }
 
   def enPassant(from: Square, state: GameState): Option[Move] = {
-    val opponent = Pawn(Color.opposite(color))
     state.journal match {
 
       case pastMove :: _
