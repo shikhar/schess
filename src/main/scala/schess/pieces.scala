@@ -194,8 +194,10 @@ case class Pawn(color: Color) extends Piece {
 
       case pastMove :: _
         if (pastMove.piece == opponent
-          && pastMove.from.rank == opponent.homeRank && pastMove.to.rank == pastMove.from.rank + 2
-          && pastMove.to.rank == from.rank && math.abs(from.file - pastMove.to.file) == 1) =>
+          && pastMove.from.rank == opponent.homeRank 
+          && math.abs(pastMove.to.rank - pastMove.from.rank) == 2
+          && pastMove.to.rank == from.rank 
+          && math.abs(from.file - pastMove.to.file) == 1) =>
 
         Some(new Move(state, from, from.delta(pastMove.to.file, direction * 1).get) {
           override val captures = Some(pastMove.to, opponent)
